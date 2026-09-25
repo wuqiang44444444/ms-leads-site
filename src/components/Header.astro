@@ -1,0 +1,65 @@
+---
+import { catalog } from "../content/pages.mjs";
+import { siteConfig } from "../../site.config.mjs";
+import { normalizeBasePath } from "../lib/urls.mjs";
+
+const base = import.meta.env.BASE_URL;
+const prefix = normalizeBasePath(siteConfig.basePath);
+const pathname = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+
+function current(href) {
+  return pathname === `${prefix}${href}`;
+}
+---
+
+<a class="skip" href="#main">跳到主要内容</a>
+<header class="site-header">
+  <div class="container header-bar">
+    <a class="brand" href={base}>
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="12" fill="#102536"></rect>
+        <path d="M8 26c4.2-8 8-10.5 12-10.5S27.8 18 32 26" fill="none" stroke="#8fd3e6" stroke-width="2.2" stroke-linecap="round"></path>
+        <circle cx="20" cy="15.5" r="2.2" fill="#8fd3e6"></circle>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-name">{siteConfig.brandName}</span>
+        <span class="brand-tag">{siteConfig.brandTagline}</span>
+      </span>
+    </a>
+    <div class="header-actions">
+      <a class="btn btn-primary btn-small" href="#lead">预约沟通</a>
+      <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+        <span class="visually-hidden">菜单</span>
+      </button>
+    </div>
+  </div>
+  <div class="container">
+    <nav id="site-nav" class="nav-panel" data-nav-panel aria-label="主导航">
+      <ul class="nav-links">
+        <li>
+          <a class="nav-link" href={base} aria-current={current("") ? "page" : undefined}>首页</a>
+        </li>
+        {
+          catalog.map((item) => (
+            <li>
+              <a
+                class:list={["nav-link", item.featured && "is-feature"]}
+                href={`${base}${item.href}`}
+                aria-current={current(item.href) ? "page" : undefined}
+              >
+                {item.menu}
+                {item.featured && <span class="nav-flag">主推</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  import { initNav } from "../scripts/nav.js";
+  initNav();
+</script>

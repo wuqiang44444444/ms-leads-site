@@ -1,0 +1,79 @@
+---
+import Base from "../layouts/Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import { privacyPage } from "../content/pages.mjs";
+import { siteConfig } from "../../site.config.mjs";
+
+const email = siteConfig.privacyEmail.trim();
+const hasEmail = email && !/example\.(com|org)$/i.test(email.split("@")[1] || "");
+---
+
+<Base
+  title={privacyPage.seo.title}
+  description={privacyPage.seo.description}
+  keywords={privacyPage.seo.keywords}
+  path={privacyPage.path}
+>
+  <article class="page-hero-plain">
+    <div class="container prose">
+      <h1>隐私说明</h1>
+      <p class="updated">更新日期：{siteConfig.updated}。本说明说明咨询表单所涉个人信息如何被处理。</p>
+
+      <h2>我们是谁</h2>
+      <p>
+        本网站由{siteConfig.brandFullName}运营，用于介绍微软云相关的订阅开通、实施与运维服务。本网站不是微软官方网站。
+      </p>
+
+      <h2>我们处理哪些信息</h2>
+      <p>当您提交咨询表单时，我们处理：</p>
+      <ul>
+        <li>公司名称</li>
+        <li>联系人姓名</li>
+        <li>工作邮箱</li>
+        <li>电话（仅在您填写时）</li>
+        <li>您选择的产品兴趣</li>
+        <li>是否设有海外主体</li>
+        <li>留言（仅在您填写时）</li>
+        <li>您已勾选同意本说明的事实</li>
+      </ul>
+      <p>本站页面不嵌入第三方广告或统计脚本。服务器访问日志若由网站托管方生成，不在本表单的收集范围内。</p>
+
+      <h2>为什么处理，以及依据</h2>
+      <p>
+        处理目的只有一项：联系您并回复本次咨询，包括为此所必需的方案沟通。法律依据是您在表单中作出的同意。我们不出售个人信息，也不把这些信息放入与本次咨询无关的营销名单，不将其用于自动化决策。
+      </p>
+
+      <h2>保存多久</h2>
+      <p>
+        我们只在完成该咨询及必要的后续沟通所需的期限内保存。一般情况下，自最后一次就该咨询与您沟通之日起不超过 24 个月；法律要求保留更久的，按其规定。期限届满后删除或做去标识化处理。
+      </p>
+
+      <h2>委托处理与跨境传输</h2>
+      <p>
+        表单内容会通过加密连接（HTTPS）发送到站点配置的接收地址，例如表单服务或飞书 / Lark 机器人。该接收方可能位于中国境外，处理目的限于替我们收下这次咨询。接收地址尚未配置时，页面不会发送您填写的内容。
+      </p>
+
+      <h2>您可以行使的权利</h2>
+      <p>在适用的个人信息保护法律下，您可以就上述信息要求查阅、更正、删除，或撤回同意。撤回不影响撤回前已经进行的处理。您也可以向有管辖权的监管部门投诉。</p>
+      {
+        hasEmail ? (
+          <p>
+            请发送邮件至 <a href={`mailto:${email}`}>{email}</a>，并注明“个人信息请求”。我们会在核实身份后处理。
+          </p>
+        ) : (
+          <p>请通过本页底部的咨询表单提交，在留言中注明“个人信息请求”，并留下我们能够联系到您的工作邮箱。</p>
+        )
+      }
+
+      <h2>不提供信息会怎样</h2>
+      <p>公司名称、联系人姓名、工作邮箱、至少一项产品兴趣、是否设有海外主体，以及同意勾选，是回复本次咨询所必需的。不提供这些内容将无法提交表单。电话和留言可以不填。</p>
+
+      <h2>安全</h2>
+      <p>表单在您的浏览器与接收地址之间通过 HTTPS 传输。接收地址由站点配置决定，我们无法代替该服务商作出超出其自身能力的安全承诺。</p>
+
+      <h2>本说明的更新</h2>
+      <p>若处理目的或接收方式发生变化，我们会更新本页的日期与正文。继续使用表单前，请查看当时页面上的文本。</p>
+    </div>
+  </article>
+  <LeadForm pageLabel="隐私说明" />
+</Base>

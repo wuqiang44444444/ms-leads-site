@@ -1,0 +1,129 @@
+---
+import { catalog } from "../content/pages.mjs";
+import { siteConfig } from "../../site.config.mjs";
+import { isPlaceholderEndpoint } from "../scripts/form-endpoint.js";
+
+const { interest = "", pageLabel = "首页" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const configured = !isPlaceholderEndpoint(siteConfig.formEndpoint);
+---
+
+<section class="lead-wrap" id="lead" aria-labelledby="lead-title">
+  <div class="container lead-layout">
+    <div class="lead-copy">
+      <h2 id="lead-title">提交一次咨询</h2>
+      <p>
+        留下公司、联系人和工作邮箱。我们仅使用这些信息联系您并回复本次咨询，不将其用于无关的营销名单。电话和留言可以不填。
+      </p>
+      <ul class="lead-points">
+        <li>说明感兴趣的产品，可以多选</li>
+        <li>告知是否设有海外主体，便于判断适用的开通方式</li>
+        <li>提交前需勾选同意《隐私说明》</li>
+      </ul>
+    </div>
+    <div class="form-card">
+      <div class="visually-hidden" data-live aria-live="polite"></div>
+      <div class="form-status" data-form-status tabindex="-1" hidden></div>
+      <div class="form-success" data-form-success tabindex="-1" hidden>
+        <h3>已收到您的咨询</h3>
+        <p>我们只会为了联系您、回复本次咨询而使用这些信息。</p>
+        <button class="btn btn-secondary" type="button" data-form-again>再写一条</button>
+      </div>
+      <div data-form-fields>
+        <form
+          data-lead-form
+          data-endpoint={siteConfig.formEndpoint}
+          data-provider={siteConfig.formProvider}
+          data-configured={configured ? "true" : "false"}
+          data-interest={interest}
+          data-page-label={pageLabel}
+          novalidate
+        >
+          <div class="error-summary" data-error-summary tabindex="-1" hidden></div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="company">公司名称</label>
+              <input id="company" name="company" type="text" autocomplete="organization" maxlength="200" required aria-describedby="company-error" />
+              <p id="company-error" class="field-error" data-error-for="company" hidden></p>
+            </div>
+            <div class="field">
+              <label for="contactName">联系人姓名</label>
+              <input id="contactName" name="contactName" type="text" autocomplete="name" maxlength="80" required aria-describedby="contactName-error" />
+              <p id="contactName-error" class="field-error" data-error-for="contactName" hidden></p>
+            </div>
+            <div class="field">
+              <label for="email">工作邮箱</label>
+              <input id="email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="200" required aria-describedby="email-error" />
+              <p id="email-error" class="field-error" data-error-for="email" hidden></p>
+            </div>
+            <div class="field">
+              <label for="phone">电话（选填）</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" aria-describedby="phone-error" />
+              <p id="phone-error" class="field-error" data-error-for="phone" hidden></p>
+            </div>
+            <fieldset class="field span-2" aria-describedby="interests-error">
+              <legend>感兴趣的产品（可多选）</legend>
+              <div class="choices">
+                {
+                  catalog.map((item) => (
+                    <label class="choice">
+                      <input id={`interest-${item.id}`} type="checkbox" name="interest" value={item.id} />
+                      <span>{item.name}</span>
+                    </label>
+                  ))
+                }
+              </div>
+              <p id="interests-error" class="field-error" data-error-for="interests" hidden></p>
+            </fieldset>
+            <fieldset class="field span-2" aria-describedby="overseas-hint overseas-error">
+              <legend>是否设有海外主体</legend>
+              <div class="choices">
+                <label class="choice">
+                  <input type="radio" name="overseas" value="yes" required />
+                  <span>有</span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="overseas" value="no" />
+                  <span>没有</span>
+                </label>
+              </div>
+              <p id="overseas-hint" class="field-hint">包括中国企业在境外的公司。外商投资企业若咨询的是境外业务，请选“有”。</p>
+              <p id="overseas-error" class="field-error" data-error-for="overseasEntity" hidden></p>
+            </fieldset>
+            <div class="field span-2">
+              <label for="message">需求简述（选填）</label>
+              <textarea id="message" name="message" rows="5" maxlength="1000" aria-describedby="message-count message-error"></textarea>
+              <p id="message-count" class="field-meta"><span data-message-count>0 / 1000</span></p>
+              <p id="message-error" class="field-error" data-error-for="message" hidden></p>
+            </div>
+            <div class="field span-2">
+              <div class="consent">
+                <input id="consent" name="consent" type="checkbox" value="yes" required aria-describedby="consent-error" />
+                <label for="consent">我已阅读并同意，仅将上述信息用于联系我并回复本次咨询。</label>
+              </div>
+              <p class="field-hint"><a href={`${base}privacy/`}>阅读《隐私说明》</a></p>
+              <p id="consent-error" class="field-error" data-error-for="consent" hidden></p>
+            </div>
+            <div class="hp" aria-hidden="true">
+              <label>
+                公司网站
+                <input name="website" type="text" tabindex="-1" autocomplete="off" />
+              </label>
+            </div>
+            <div class="form-actions span-2">
+              <button class="btn btn-primary" type="submit" data-submit>提交咨询</button>
+            </div>
+          </div>
+        </form>
+        <noscript>
+          <p class="noscript-note">提交咨询需要启用 JavaScript。当前浏览器没有启用脚本，填写的内容不会被发送。</p>
+        </noscript>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initLeadForm } from "../scripts/lead-form.js";
+  initLeadForm();
+</script>
