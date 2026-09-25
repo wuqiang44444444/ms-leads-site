@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wuqiang44444444.github.io/ms-leads-site/sitemap.xml

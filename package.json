@@ -1,0 +1,16 @@
+{
+  "name": "ms-leads-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node scripts/generate-sitemap.mjs",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/verify-build.mjs",
+    "preview": "astro preview --host 127.0.0.1",
+    "test": "node --test scripts/*.test.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.14.1"
+  }
+}

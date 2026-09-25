@@ -1,0 +1,204 @@
+---
+import Base from "../layouts/Base.astro";
+import LeadForm from "./LeadForm.astro";
+import Compliance from "./Compliance.astro";
+import { catalog } from "../content/pages.mjs";
+import { siteConfig } from "../../site.config.mjs";
+import { pageUrl } from "../lib/urls.mjs";
+
+const { page } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const canonical = pageUrl(siteConfig, page.path);
+const homeUrl = pageUrl(siteConfig, "");
+const related = catalog.filter((item) => item.id !== page.id);
+const crumbsName = catalog.find((item) => item.id === page.id)?.name || page.seo.title;
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "首页", item: homeUrl },
+      { "@type": "ListItem", position: 2, name: crumbsName, item: canonical },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: page.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  },
+];
+---
+
+<Base
+  title={page.seo.title}
+  description={page.seo.description}
+  keywords={page.seo.keywords}
+  path={page.path}
+  jsonLd={jsonLd}
+>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <p class="crumbs"><a href={base}>首页</a> / {crumbsName}</p>
+        <p class="eyebrow">{page.eyebrow}</p>
+        <h1>{page.title}</h1>
+        <p class="lede">{page.lede}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#lead">预约沟通</a>
+          <a class="btn btn-ghost" href="#deliver">查看服务内容</a>
+        </div>
+        {
+          page.toc && (
+            <ul class="toc">
+              {page.toc.map((item) => (
+                <li>
+                  <a href={item.href}>{item.label}</a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+      <aside class="hero-panel" aria-label={page.aside.title}>
+        <h2>{page.aside.title}</h2>
+        <dl class="panel-list">
+          {
+            page.aside.items.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.text}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        {page.aside.foot && <p class="panel-foot">{page.aside.foot}</p>}
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" id="pains" aria-labelledby="pains-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="pains-title">{page.painsTitle}</h2>
+        <p class="section-intro">{page.painsIntro}</p>
+      </div>
+      <ol class="pains">
+        {
+          page.pains.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    page.panels.map((panel) => (
+      <section class="section section-alt" id={panel.id} aria-labelledby={`${panel.id}-title`}>
+        <div class="container">
+          <div class="section-head">
+            <p class="kicker">{panel.eyebrow}</p>
+            <h2 id={`${panel.id}-title`}>{panel.title}</h2>
+            <p class="section-intro">{panel.intro}</p>
+          </div>
+          <ul class="mini-grid">
+            {panel.items.map((item) => (
+              <li>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class:list={["section", page.panels.length % 2 === 0 && "section-alt"]} id="deliver" aria-labelledby="deliver-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="deliver-title">{page.deliverTitle}</h2>
+        <p class="section-intro">{page.deliverIntro}</p>
+      </div>
+      <ol class="deliver">
+        {
+          page.deliver.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="price-note">{page.pricingNote}</p>
+    </div>
+  </section>
+
+  <section class:list={["section", page.panels.length % 2 === 1 && "section-alt"]} id="process" aria-labelledby="process-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="process-title">{page.processTitle}</h2>
+        <p class="section-intro">{page.processIntro}</p>
+      </div>
+      <ol class="process">
+        {
+          page.process.map((step) => (
+            <li>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {page.showCompliance && <Compliance variant="section" />}
+
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="faq-title">{page.faqTitle}</h2>
+      </div>
+      <div class="faq-list">
+        {
+          page.faqs.map((faq) => (
+            <details class="faq">
+              <summary>{faq.q}</summary>
+              <div class="faq-body">
+                <p>{faq.a}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" aria-labelledby="related-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="related-title">其他产品</h2>
+      </div>
+      <ul class="related">
+        {
+          related.map((item) => (
+            <li>
+              <a href={`${base}${item.href}`}>{item.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <LeadForm interest={page.id} pageLabel={crumbsName} />
+</Base>

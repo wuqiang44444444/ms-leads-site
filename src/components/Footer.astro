@@ -1,0 +1,42 @@
+---
+import Compliance from "./Compliance.astro";
+import { catalog } from "../content/pages.mjs";
+import { siteConfig } from "../../site.config.mjs";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<footer class="site-footer">
+  <Compliance variant="footer" />
+  <div class="footer-main">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-brand">{siteConfig.brandFullName}</p>
+        <p>{siteConfig.brandTagline}。订阅通过 CSP 开在客户名下，实施与运维另行安排。</p>
+      </div>
+      <div>
+        <h2 class="visually-hidden">产品</h2>
+        <ul class="footer-links">
+          {
+            catalog.map((item) => (
+              <li>
+                <a href={`${base}${item.href}`}>{item.name}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h2 class="visually-hidden">说明</h2>
+        <ul class="footer-links">
+          <li><a href={`${base}privacy/`}>隐私说明</a></li>
+          <li><a href="#lead">提交咨询</a></li>
+          <li><a href={`${base}azure-openai/`}>Azure OpenAI 方案</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      <p class="legal-line">© {siteConfig.updated.slice(0, 4)} {siteConfig.brandFullName}。本网站不是微软官方网站。商标归其各自权利人所有。</p>
+    </div>
+  </div>
+</footer>

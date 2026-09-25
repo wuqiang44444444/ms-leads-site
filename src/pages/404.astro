@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import { siteConfig } from "../../site.config.mjs";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Base
+  title={`页面不存在 | ${siteConfig.brandName}`}
+  description="您访问的页面不存在。可以回到首页，或查看 Azure OpenAI 服务说明。"
+  keywords={`${siteConfig.brandName},Azure OpenAI`}
+  path="404.html"
+  robots="noindex,follow"
+>
+  <section class="not-found">
+    <div class="container">
+      <p class="kicker">404</p>
+      <h1>没有找到这个页面</h1>
+      <p>链接可能已变更。您可以回到首页，或直接查看 Azure OpenAI。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href={base}>回到首页</a>
+        <a class="btn btn-secondary" href={`${base}azure-openai/`}>Azure OpenAI</a>
+      </div>
+    </div>
+  </section>
+  <LeadForm pageLabel="未找到页面" />
+</Base>

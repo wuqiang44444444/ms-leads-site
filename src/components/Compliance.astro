@@ -1,0 +1,46 @@
+---
+import { complianceBlocks } from "../content/compliance.mjs";
+
+const { variant = "section" } = Astro.props;
+const headingId = variant === "footer" ? "footer-compliance-heading" : "compliance-heading";
+---
+
+{
+  variant === "footer" ? (
+    <div class="compliance-footer">
+      <div class="container">
+        <h2 id={headingId}>合规说明</h2>
+        <div class="compliance-grid">
+          {complianceBlocks.map((block) => (
+            <section class="compliance-block" aria-labelledby={`${headingId}-${block.title}`}>
+              <h3 id={`${headingId}-${block.title}`}>{block.title}</h3>
+              {block.paragraphs.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <section class="section compliance-section" id="compliance" aria-labelledby={headingId}>
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker">请先阅读</p>
+          <h2 id={headingId}>合规说明</h2>
+          <p class="section-intro">以下边界适用于 Azure OpenAI，也适用于本站提到的其他微软产品。提交咨询即表示您了解这些范围。</p>
+        </div>
+        <div class="compliance-grid">
+          {complianceBlocks.map((block) => (
+            <article class="info-card compliance-block">
+              <h3>{block.title}</h3>
+              {block.paragraphs.map((paragraph) => (
+                <p>{paragraph}</p>
+              ))}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

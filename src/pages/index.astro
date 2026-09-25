@@ -1,0 +1,181 @@
+---
+import Base from "../layouts/Base.astro";
+import LeadForm from "../components/LeadForm.astro";
+import { catalog, homePage } from "../content/pages.mjs";
+import { siteConfig } from "../../site.config.mjs";
+import { pageUrl } from "../lib/urls.mjs";
+
+const page = homePage;
+const base = import.meta.env.BASE_URL;
+const canonical = pageUrl(siteConfig, "");
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "@id": `${canonical}#organization`,
+    name: siteConfig.brandFullName,
+    url: canonical,
+    description: page.seo.description,
+    areaServed: ["Worldwide"],
+    knowsLanguage: ["zh-CN"],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: page.faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.q,
+      acceptedAnswer: { "@type": "Answer", text: faq.a },
+    })),
+  },
+];
+---
+
+<Base title={page.seo.title} description={page.seo.description} keywords={page.seo.keywords} path="" jsonLd={jsonLd}>
+  <section class="hero hero-home">
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">{page.eyebrow}</p>
+        <h1>{page.title}</h1>
+        <p class="lede">{page.lede}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#lead">预约沟通</a>
+          <a class="btn btn-ghost" href={`${base}azure-openai/`}>了解 Azure OpenAI</a>
+        </div>
+      </div>
+      <aside class="hero-panel" aria-label={page.aside.title}>
+        <h2>{page.aside.title}</h2>
+        <dl class="panel-list">
+          {
+            page.aside.items.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>{item.text}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="panel-foot">{page.aside.foot}</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="audience" aria-label="服务对象">
+    <div class="container audience-grid">
+      <div>
+        <h2>主要面向谁</h2>
+        <p>中国企业的海外主体，以及外商投资企业。OpenAI、Claude 的官方服务不向中国大陆提供。</p>
+      </div>
+      <div>
+        <h2>只在境内的需求</h2>
+        <p>若生成式人工智能只准备在中国大陆使用，我们可以就国产模型方案提供咨询，而不是默认开通 Azure OpenAI。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="catalog-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="kicker">产品</p>
+        <h2 id="catalog-title">从 Azure OpenAI 看起，也可以进入其他产品</h2>
+        <p class="section-intro">每条产品都单独说明授权、实施和运维。Microsoft 365 指国际版，与世纪互联运营的中国版不是同一产品。</p>
+      </div>
+      <ul class="catalog">
+        {
+          catalog.map((item) => (
+            <li>
+              <a class:list={["catalog-card", item.featured && "featured"]} href={`${base}${item.href}`}>
+                {item.featured && <span class="card-kicker">主推</span>}
+                <span class="card-title">{item.cardTitle}</span>
+                <span class="card-text">{item.cardText}</span>
+                <span class="card-more">查看说明</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="pains" aria-labelledby="pains-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="pains-title">{page.painsTitle}</h2>
+        <p class="section-intro">{page.painsIntro}</p>
+      </div>
+      <ol class="pains">
+        {
+          page.pains.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="deliver" aria-labelledby="deliver-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="deliver-title">{page.deliverTitle}</h2>
+        <p class="section-intro">{page.deliverIntro}</p>
+      </div>
+      <ol class="deliver">
+        {
+          page.deliver.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="price-note">{page.pricingNote}</p>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="process" aria-labelledby="process-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="process-title">{page.processTitle}</h2>
+        <p class="section-intro">{page.processIntro}</p>
+      </div>
+      <ol class="process">
+        {
+          page.process.map((step) => (
+            <li>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="faq-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="faq-title">{page.faqTitle}</h2>
+        <p class="section-intro">更完整的异议和开通步骤在 Azure OpenAI 页面。</p>
+      </div>
+      <div class="faq-list">
+        {
+          page.faqs.map((faq) => (
+            <details class="faq">
+              <summary>{faq.q}</summary>
+              <div class="faq-body">
+                <p>{faq.a}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <LeadForm interest="azure-openai" pageLabel="首页" />
+</Base>
